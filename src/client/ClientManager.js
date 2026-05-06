@@ -1,0 +1,1 @@
+"export class ClientManager {\n  constructor() {\n    this.clients = []; // Will be populated from DB\n  }\n\n  getClientById(id) {\n    return this.clients.find(c => c.id === id);\n  }\n\n  updateClientData(client) {\n    // API call to update client\n    console.log('Updating client:', client);\n  }\n}";
