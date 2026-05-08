@@ -11,7 +11,8 @@ interface OrderItem {
     product_id: number;
     order_id: number;
     quantity: number;
-    unit_price: number;
+    price: number;
+    product_name: string;
     created_at: string;
     product?: {
         id: number;
@@ -33,7 +34,10 @@ interface Order {
     order_number: string;
     user_id: number;
     status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
-    total_amount: number;
+    total: number;
+    subtotal: number;
+    tax: number;
+    shipping: number;
     created_at: string;
     updated_at: string;
     items?: OrderItem[];
@@ -170,7 +174,7 @@ export default function OrderShow({ order }: Props) {
                                                         )}
                                                     </div>
                                                     <div className="text-right">
-                                                        <p className="font-semibold">${item.unit_price.toFixed(2)}</p>
+                                                        <p className="font-semibold">${item.price.toFixed(2)}</p>
                                                         <p className="text-sm text-gray-600 dark:text-gray-400">
                                                             Qty: {item.quantity}
                                                         </p>
@@ -197,12 +201,20 @@ export default function OrderShow({ order }: Props) {
                             <CardContent className="space-y-4">
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
-                                    <span>${order.total_amount.toFixed(2)}</span>
+                                    <span>${order.subtotal.toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-600 dark:text-gray-400">Tax</span>
+                                    <span>${order.tax.toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-600 dark:text-gray-400">Shipping</span>
+                                    <span>${order.shipping.toFixed(2)}</span>
                                 </div>
                                 <Separator />
                                 <div className="flex justify-between font-semibold text-lg">
                                     <span>Total</span>
-                                    <span>${order.total_amount.toFixed(2)}</span>
+                                    <span>${order.total.toFixed(2)}</span>
                                 </div>
                             </CardContent>
                         </Card>

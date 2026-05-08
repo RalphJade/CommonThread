@@ -12,6 +12,8 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 interface Product {
     id: string;
@@ -24,6 +26,9 @@ interface Product {
 }
 
 export default function ProductCollection() {
+    const [selectedSize, setSelectedSize] = useState<string | null>(null);
+    const [confirmingProduct, setConfirmingProduct] = useState<Product | null>(null);
+    const [isOrderComplete, setIsOrderComplete] = useState(false); // Optional: for a success state
     // Curated collection data for the client storefront
     const collection: Product[] = [
         { 
@@ -60,6 +65,70 @@ export default function ProductCollection() {
             image: "/images/cognac.png",
             description: "Peak lapel tuxedo with silk-satin details and a custom bronze lining for a heritage touch."
         },
+        { 
+            id: "5", 
+            name: "Highland Forest Plaid", 
+            category: "Bespoke Suiting", 
+            price: "₱42,000", 
+            image: "/images/model4.png",
+            description: "A rugged yet refined green and navy plaid suit featuring soft shoulders and a modern slim-tapered trouser."
+        },
+        { 
+            id: "6", 
+            name: "Harvest Gold Velvet", 
+            category: "Evening Wear", 
+            price: "₱48,500", 
+            image: "/images/model6.png",
+            description: "A stunning three-piece velvet commission in deep mustard gold, featuring a matching waistcoat and wide peak lapels."
+        },
+        { 
+            id: "7", 
+            name: "Emerald Estate Velvet", 
+            category: "Evening Wear", 
+            price: "₱48,500", 
+            image: "/images/model7.png",
+            description: "Luxurious bottle-green velvet three-piece tuxedo. The deep pile of the fabric offers a rich luster perfect for gala events."
+        },
+        { 
+            id: "8", 
+            name: "Ivory Alabaster Corduroy", 
+            category: "Seasonal Bespoke", 
+            price: "₱38,000", 
+            image: "/images/model8.png",
+            description: "An architectural three-piece suit in winter white corduroy, accented with navy silk piping and custom blue buttons."
+        },
+        { 
+            id: "9", 
+            name: "Regency Crimson Tartan", 
+            category: "Heritage Collection", 
+            price: "₱45,000", 
+            image: "/images/model9.png",
+            description: "A bold red and black oversized plaid three-piece suit, paired with a custom silk cravat for a sophisticated, historical look."
+        },
+        { 
+            id: "10", 
+            name: "Iron Gate Micro-Check", 
+            category: "Business Elite", 
+            price: "₱39,500", 
+            image: "/images/model10.png",
+            description: "Sophisticated grey micro-houndstooth three-piece suit designed for high-stakes environments. Features a structured chest and classic drape."
+        },
+        { 
+            id: "11", 
+            name: "Obsidian Shadow Check", 
+            category: "Business Elite", 
+            price: "₱37,000", 
+            image: "/images/model11.png",
+            description: "Dark charcoal two-piece suit with a subtle windowpane check, paired with a black poplin shirt for a sharp, monochromatic aesthetic."
+        },
+        { 
+            id: "12", 
+            name: "Midnight Glen Plaid", 
+            category: "Bespoke Suiting", 
+            price: "₱41,000", 
+            image: "/images/model12.png",
+            description: "Classic blue and green Glen plaid suit with a modern cut. Includes a high-gorge notch lapel and bespoke copper silk lining."
+        }
     ];
 
     return (
@@ -131,7 +200,7 @@ export default function ProductCollection() {
                                         </Button>
                                     </div>
                                 </CardContent>
-                                <CardFooter className="p-6 flex flex-col items-start gap-2">
+                                <CardFooter className="p-6 flex flex-col items-start gap-4">
                                     <div className="flex justify-between w-full items-start">
                                         <div>
                                             <p className="text-[10px] text-[#6B8994] uppercase tracking-[0.2em]">{item.category}</p>
@@ -139,11 +208,89 @@ export default function ProductCollection() {
                                                 {item.name}
                                             </h3>
                                         </div>
-                                        <p className="text-[#BE8C56] font-bold">{item.price}</p>
+                                        <p className="text-[#BE8C56] font-bold text-lg">{item.price}</p>
                                     </div>
-                                    <button className="mt-4 flex items-center text-[10px] font-black uppercase tracking-widest text-[#FFFDEB] group/btn">
-                                        Details <ArrowRight className="ml-2 w-3 h-3 transition-transform group-hover/btn:translate-x-2" />
-                                    </button>
+
+                                            {/* Order Actions */}
+                                            <Dialog>
+                                            <DialogTrigger asChild>
+                                                <Button 
+                                                    className="w-full bg-[#BE8C56] text-[#101E29] hover:bg-[#CFBC85] font-black uppercase tracking-widest text-[10px] h-10"
+                                                    onClick={() => setConfirmingProduct(item)}
+                                                >
+                                                    <ShoppingBag className="mr-2 h-3.5 w-3.5" /> Order Now
+                                                </Button>
+                                            </DialogTrigger>
+                                            
+                                            <DialogContent className="bg-[#101E29] border-[#3B4B51] text-[#FFFDEB]">
+                                                <DialogHeader>
+                                                    <DialogTitle className="text-2xl font-extrabold uppercase tracking-tighter">
+                                                        Confirm Commission
+                                                    </DialogTitle>
+                                                    <DialogDescription className="text-[#6B8994] uppercase tracking-widest text-[10px]">
+                                                        Add to your bespoke collection
+                                                    </DialogDescription>
+                                                </DialogHeader>
+
+                                                {/* Product Preview */}
+                                                <div className="py-6 flex gap-4 items-center border-t border-[#3B4B51]/50">
+                                                    <div className="w-20 h-24 bg-[#1B2D3C] rounded overflow-hidden">
+                                                        <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-bold text-lg uppercase">{item.name}</h4>
+                                                        <p className="text-[#BE8C56] font-bold">{item.price}</p>
+                                                        <p className="text-[10px] text-[#6B8994] mt-1 italic">Est. completion: 4-6 weeks</p>
+                                                    </div>
+                                                </div>
+
+                                                {/* Size Selection Section */}
+                                                <div className="py-6 border-t border-[#3B4B51]/50">
+                                                    <div className="flex justify-between items-center mb-3">
+                                                        <label className="text-[10px] uppercase tracking-[0.2em] text-[#6B8994] font-bold">Select Size</label>
+                                                        <button className="text-[10px] uppercase tracking-widest text-[#BE8C56] hover:underline">Size Guide</button>
+                                                    </div>
+                                                    <div className="grid grid-cols-4 gap-2">
+                                                        {['38R', '40R', '42R', '44R', '38L', '40L', '42L', '44L'].map((size) => (
+                                                            <button
+                                                                key={size}
+                                                                onClick={() => setSelectedSize(size)}
+                                                                className={`py-2 text-xs font-bold border transition-all duration-200 ${
+                                                                    selectedSize === size 
+                                                                    ? 'bg-[#BE8C56] border-[#BE8C56] text-[#101E29]' 
+                                                                    : 'bg-transparent border-[#3B4B51] text-[#6B8994] hover:border-[#BE8C56] hover:text-[#FFFDEB]'
+                                                                }`}
+                                                            >
+                                                                {size}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                <DialogFooter className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-[#3B4B51]/50">
+                                                    <DialogTrigger asChild>
+                                                        <Button variant="outline" className="border-[#3B4B51] text-[#6B8994] hover:text-[#FFFDEB] uppercase text-[10px]">
+                                                            Cancel
+                                                        </Button>
+                                                    </DialogTrigger>
+                                                    <Button 
+                                                        className="bg-[#BE8C56] text-[#101E29] hover:bg-[#CFBC85] font-black uppercase tracking-tighter flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        disabled={!selectedSize}
+                                                        onClick={() => {
+                                                            console.log(`Added to cart: ${item.name}, Size: ${selectedSize}`);
+                                                            setSelectedSize(null); // Reset for next selection
+                                                        }}
+                                                    >
+                                                        {selectedSize ? `Add Size ${selectedSize} to Bag` : 'Select a Size'}
+                                                    </Button>
+                                                </DialogFooter>
+                                            </DialogContent>
+                                        </Dialog>
+                                        
+                                        <button className="flex items-center justify-center text-[10px] font-black uppercase tracking-widest text-[#6B8994] hover:text-[#FFFDEB] transition-colors group/btn">
+                                            View Details 
+                                            <ArrowRight className="ml-2 w-3 h-3 transition-transform group-hover/btn:translate-x-1" />
+                                        </button>
                                 </CardFooter>
                             </Card>
                         ))}

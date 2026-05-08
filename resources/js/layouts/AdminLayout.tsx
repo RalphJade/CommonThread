@@ -9,7 +9,12 @@ const commonThreadLogoUrl = "/assets/images/Common Thread.png";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const { auth } = usePage().props as any;
-    const currentUrl = usePage().url;
+
+    // Normalize current URL for reliable "active" link highlighting
+    // - strip querystring (?foo=bar)
+    // - trim trailing slash (except keep root "/")
+    const currentUrlRaw = usePage().url || '';
+    const currentUrl = currentUrlRaw.split('?')[0].replace(/\/+$/, '') || '/';
 
     // Navigation Links
     const navLinks = [
@@ -37,15 +42,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         {/* Desktop Nav */}
                         <nav className="hidden md:flex items-center gap-1">
                             {navLinks.map((link) => {
-                                const isActive = currentUrl === link.href || currentUrl.startsWith(link.href + '/');
+                                /** * 2. FIXED ACTIVE LOGIC:
+                                 * - For 'Dashboard' (/admin), we check for an exact match or an exact match with trailing slash.
+                                 * - For others, we check if the current path starts with the href to catch sub-pages (e.g., /admin/orders/1).
+                                 */
+                                const isActive = link.href === '/admin' 
+                                    ? (currentUrl === '/admin' || currentUrl === '/admin/') 
+                                    : currentUrl.startsWith(link.href);
+
                                 return (
                                     <Link key={link.name} href={link.href}>
-                                        <Button 
-                                            variant="ghost" 
-                                            className={`text-sm tracking-wide uppercase ${
-                                                isActive 
-                                                ? 'bg-[#1B2D3C] text-[#BE8C56]' 
-                                                : 'text-[#6B8994] hover:bg-[#1B2D3C]/50 hover:text-[#FFFDEB]'
+                                        <Button
+                                            variant="ghost"
+                                            className={`text-sm tracking-wide uppercase transition-colors ${
+                                                isActive
+                                                    ? 'bg-[#1B2D3C] text-[#BE8C56] border-b-2 border-[#BE8C56] rounded-none' // Added a subtle border for visual confirmation
+                                                    : 'text-[#6B8994] hover:bg-[#1B2D3C]/50 hover:text-[#FFFDEB]'
                                             }`}
                                         >
                                             {link.icon}

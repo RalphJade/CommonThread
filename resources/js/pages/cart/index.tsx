@@ -1,10 +1,19 @@
-import { Head, Link, router } from '@inertiajs/react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState } from 'react';
+import AppLayout from '@/layouts/app-layout';
+import { Head, Link } from '@inertiajs/react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { Trash2, Plus, Minus, ArrowLeft } from 'lucide-react';
-import { useState } from 'react';
+import { 
+    Trash2, 
+    Plus, 
+    Minus, 
+    ArrowLeft, 
+    ShoppingBag, 
+    Tag, 
+    Truck, 
+    ShieldCheck 
+} from 'lucide-react';
 
 interface Product {
     id: number;
@@ -14,6 +23,7 @@ interface Product {
     color?: string;
     fabric?: string;
     price: number;
+    image?: string;
 }
 
 interface CartItem {
@@ -24,204 +34,229 @@ interface CartItem {
     product: Product;
 }
 
-interface Props {
-    cartItems: CartItem[];
-    cartCount: number;
-}
+// Hardcoded Sample Data to match the "Bespoke" theme
+const INITIAL_CART: CartItem[] = [
+    {
+        id: 1,
+        product_id: 101,
+        user_id: 1,
+        quantity: 1,
+        product: {
+            id: 101,
+            name: "Bespoke Midnight Navy Wool Suit",
+            slug: "bespoke-navy-suit",
+            type: "Full Commission",
+            color: "Midnight Navy",
+            fabric: "Super 150s Merino Wool",
+            price: 1850.00,
+            image: "/images/cart1.png"
+        }
+    },
+    {
+        id: 2,
+        product_id: 102,
+        user_id: 1,
+        quantity: 2,
+        product: {
+            id: 102,
+            name: "White Poplin Tailored Shirt",
+            slug: "white-poplin-shirt",
+            type: "Essentials",
+            color: "Pure White",
+            fabric: "Egyptian Cotton",
+            price: 225.00,
+            image: "/images/cart2.png"
+        }
+    }
+];
 
-export default function CartIndex({ cartItems }: Props) {
+export default function CartIndex() {
+    const [cartItems, setCartItems] = useState<CartItem[]>(INITIAL_CART);
     const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-    const subtotal = cartItems.reduce((total, item) => {
-        return total + item.product.price * item.quantity;
-    }, 0);
-
-    const tax = subtotal * 0.1; // 10% tax
+    const subtotal = cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    const tax = subtotal * 0.1;
     const total = subtotal + tax;
 
-    const handleUpdateQuantity = (cartItemId: number, quantity: number) => {
-        if (quantity <= 0) {
-            handleRemoveItem(cartItemId);
-            return;
-        }
-
-        router.patch(`/cart/${cartItemId}`, { quantity }, {
-            preserveScroll: true,
-        });
+    const handleUpdateQuantity = (id: number, delta: number) => {
+        setCartItems(prev => prev.map(item => 
+            item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item
+        ));
     };
 
-    const handleRemoveItem = (cartItemId: number) => {
-        router.delete(`/cart/${cartItemId}`, {
-            preserveScroll: true,
-        });
-    };
-
-    const handleClearCart = () => {
-        if (confirm('Are you sure you want to clear your cart?')) {
-            router.post('/cart/clear', {}, {
-                preserveScroll: true,
-            });
-        }
-    };
-
-    const handleCheckout = () => {
-        setIsCheckingOut(true);
-        router.post('/checkout', {}, {
-            onFinish: () => setIsCheckingOut(false),
-        });
+    const handleRemoveItem = (id: number) => {
+        setCartItems(prev => prev.filter(item => item.id !== id));
     };
 
     return (
         <>
-            <Head title="Shopping Cart" />
-            <div className="space-y-6">
+            <Head title="Shopping Bag | Common Thread" />
+            
+            <div className="max-w-6xl mx-auto space-y-8 p-4 md:p-8 text-[#FFFDEB]">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#3B4B51] pb-6">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Shopping Cart</h1>
-                        <p className="text-gray-600 dark:text-gray-400 mt-2">
-                            {cartItems.length} item{cartItems.length !== 1 ? 's' : ''} in cart
+                        <h1 className="text-4xl font-extrabold tracking-tighter uppercase">Your Shopping Bag</h1>
+                        <p className="text-[#CFBE85] mt-1 flex items-center gap-2">
+                            <ShoppingBag className="w-4 h-4" /> 
+                            {cartItems.length} curated pieces selected
                         </p>
                     </div>
                     <Link href="/products">
-                        <Button variant="outline" gap-2>
-                            <ArrowLeft className="w-4 h-4" />
-                            Continue Shopping
+                        <Button variant="outline" className="border-[#3B4B51] text-[#FFFDEB] hover:bg-[#1B2D3C] uppercase tracking-widest text-xs">
+                            <ArrowLeft className="w-4 h-4 mr-2" />
+                            Continue Browsing
                         </Button>
                     </Link>
                 </div>
 
                 {cartItems.length === 0 ? (
-                    <Card>
-                        <CardContent className="py-12">
-                            <div className="text-center">
-                                <p className="text-gray-600 dark:text-gray-400 mb-4">Your cart is empty</p>
-                                <Link href="/products">
-                                    <Button>Browse Products</Button>
-                                </Link>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <div className="py-20 text-center space-y-4">
+                        <p className="text-[#6B8994] uppercase tracking-[0.2em]">Your bag is currently empty</p>
+                        <Link href="/products">
+                            <Button className="bg-[#BE8C56] text-[#101E29] hover:bg-[#CFBC85] font-bold uppercase">
+                                Explore Collection
+                            </Button>
+                        </Link>
+                    </div>
                 ) : (
-                    <div className="grid gap-6 lg:grid-cols-3">
-                        {/* Cart Items */}
-                        <div className="lg:col-span-2">
-                            <Card>
-                                <CardHeader className="flex flex-row items-center justify-between pb-3">
-                                    <CardTitle>Items</CardTitle>
-                                    <Button 
-                                        variant="ghost" 
-                                        size="sm" 
-                                        onClick={handleClearCart}
-                                        className="text-red-600 hover:text-red-700"
-                                    >
-                                        Clear Cart
-                                    </Button>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                    {cartItems.map((item, index) => (
-                                        <div key={item.id}>
-                                            <div className="flex items-start justify-between gap-4">
-                                                <div className="flex-1">
-                                                    <h3 className="font-semibold text-lg">{item.product.name}</h3>
-                                                    {item.product.type && (
-                                                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                            Type: {item.product.type}
-                                                        </p>
-                                                    )}
-                                                    {item.product.color && (
-                                                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                            Color: {item.product.color}
-                                                        </p>
-                                                    )}
-                                                    {item.product.fabric && (
-                                                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                            Fabric: {item.product.fabric}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                                <div className="text-right">
-                                                    <p className="text-2xl font-bold">
-                                                        ${(item.product.price * item.quantity).toFixed(2)}
-                                                    </p>
-                                                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                        ${item.product.price.toFixed(2)} each
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            {/* Quantity Controls */}
-                                            <div className="flex items-center gap-3 mt-3">
-                                                <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded">
-                                                    <button
-                                                        onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                                                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
-                                                    >
-                                                        <Minus className="w-4 h-4" />
-                                                    </button>
-                                                    <div className="px-4 py-2 border-l border-r border-gray-300 dark:border-gray-600 text-center min-w-16">
-                                                        {item.quantity}
-                                                    </div>
-                                                    <button
-                                                        onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                                                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
-                                                    >
-                                                        <Plus className="w-4 h-4" />
-                                                    </button>
-                                                </div>
-                                                <button
-                                                    onClick={() => handleRemoveItem(item.id)}
-                                                    className="ml-auto p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
-                                            </div>
-
-                                            {index < cartItems.length - 1 && <Separator className="mt-4" />}
-                                        </div>
-                                    ))}
-                                </CardContent>
-                            </Card>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        {/* Cart Items List */}
+                        <div className="lg:col-span-2 space-y-4">
+                            {cartItems.map((item) => (
+                                <Card key={item.id} className="bg-[#1B2D3C] border-[#3B4B51] overflow-hidden group">
+                                    <CardContent className="p-6">
+                                        <div className="flex flex-col sm:flex-row gap-6">
+                        {/* Product Image Section */}
+                        <div className="w-full sm:w-32 h-40 bg-[#101E29] border border-[#3B4B51] rounded flex items-center justify-center relative overflow-hidden group">
+                            {item.product.image ? (
+                                <img 
+                                    src={item.product.image} 
+                                    alt={item.product.name} 
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                />
+                            ) : (
+                                <Tag className="text-[#3B4B51] w-8 h-8" />
+                            )}
+                            
+                            {/* Subtle overlay to maintain brand aesthetic */}
+                            <div className="absolute inset-0 bg-[#BE8C56]/5 group-hover:bg-transparent transition-colors" />
                         </div>
 
-                        {/* Order Summary */}
-                        <div>
-                            <Card className="sticky top-4">
+                                            {/* Details */}
+                                            <div className="flex-1 space-y-2">
+                                                <div className="flex justify-between items-start">
+                                                    <div>
+                                                        <span className="text-[10px] uppercase tracking-[0.2em] text-[#BE8C56] font-bold">
+                                                            {item.product.type}
+                                                        </span>
+                                                        <h3 className="text-xl font-bold uppercase tracking-tight">{item.product.name}</h3>
+                                                    </div>
+                                                    <button 
+                                                        onClick={() => handleRemoveItem(item.id)}
+                                                        className="text-[#6B8994] hover:text-[#BF806C] transition-colors"
+                                                    >
+                                                        <Trash2 className="w-5 h-5" />
+                                                    </button>
+                                                </div>
+
+                                                <div className="grid grid-cols-2 gap-4 pt-2">
+                                                    <p className="text-xs text-[#6B8994] uppercase tracking-widest">
+                                                        Fabric: <span className="text-[#FFFDEB]">{item.product.fabric}</span>
+                                                    </p>
+                                                    <p className="text-xs text-[#6B8994] uppercase tracking-widest">
+                                                        Color: <span className="text-[#FFFDEB]">{item.product.color}</span>
+                                                    </p>
+                                                </div>
+
+                                                <div className="flex justify-between items-end pt-4">
+                                                    {/* Custom Quantity Stepper */}
+                                                    <div className="flex items-center bg-[#101E29] border border-[#3B4B51] rounded shadow-inner">
+                                                        <button 
+                                                            onClick={() => handleUpdateQuantity(item.id, -1)}
+                                                            className="p-2 text-[#6B8994] hover:text-[#CFBE85]"
+                                                        >
+                                                            <Minus className="w-4 h-4" />
+                                                        </button>
+                                                        <span className="px-4 py-1 text-sm font-bold border-x border-[#3B4B51] min-w-[3rem] text-center">
+                                                            {item.quantity}
+                                                        </span>
+                                                        <button 
+                                                            onClick={() => handleUpdateQuantity(item.id, 1)}
+                                                            className="p-2 text-[#6B8994] hover:text-[#CFBE85]"
+                                                        >
+                                                            <Plus className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
+                                                    <p className="text-2xl font-black text-[#CFBE85]">
+                                                        ${(item.product.price * item.quantity).toLocaleString()}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+
+                        {/* Order Summary Sidebar */}
+                        <div className="space-y-6">
+                            <Card className="bg-[#101E29] border-[#BE8C56]/30 border-t-4 sticky top-24">
                                 <CardHeader>
-                                    <CardTitle>Order Summary</CardTitle>
+                                    <CardTitle className="text-xl font-extrabold uppercase tracking-tighter">Summary</CardTitle>
                                 </CardHeader>
-                                <CardContent className="space-y-4">
+                                <CardContent className="space-y-6">
                                     <div className="space-y-3">
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
-                                            <span>${subtotal.toFixed(2)}</span>
+                                        <div className="flex justify-between text-sm uppercase tracking-widest text-[#6B8994]">
+                                            <span>Subtotal</span>
+                                            <span className="text-[#FFFDEB]">${subtotal.toLocaleString()}</span>
                                         </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-600 dark:text-gray-400">Tax (10%)</span>
-                                            <span>${tax.toFixed(2)}</span>
+                                        <div className="flex justify-between text-sm uppercase tracking-widest text-[#6B8994]">
+                                            <span>Bespoke Surcharge (Tax)</span>
+                                            <span className="text-[#FFFDEB]">${tax.toLocaleString()}</span>
                                         </div>
-                                        <Separator />
-                                        <div className="flex justify-between text-lg font-bold">
-                                            <span>Total</span>
-                                            <span>${total.toFixed(2)}</span>
+                                        <div className="flex justify-between text-sm uppercase tracking-widest text-[#6B8994]">
+                                            <span>Shipping</span>
+                                            <span className="text-[#A4BF8E] font-bold">Complimentary</span>
+                                        </div>
+                                        <Separator className="bg-[#3B4B51]" />
+                                        <div className="flex justify-between items-baseline pt-2">
+                                            <span className="text-xs uppercase font-bold text-[#BE8C56]">Total Amount</span>
+                                            <span className="text-3xl font-black text-[#FFFDEB]">
+                                                ${total.toLocaleString()}
+                                            </span>
                                         </div>
                                     </div>
 
-                                    <Button 
-                                        onClick={handleCheckout} 
-                                        disabled={isCheckingOut}
-                                        className="w-full"
-                                    >
-                                        {isCheckingOut ? 'Processing...' : 'Proceed to Checkout'}
-                                    </Button>
-
-                                    <Link href="/products" className="block">
-                                        <Button variant="outline" className="w-full">
-                                            Continue Shopping
+                                    <div className="space-y-3">
+                                        <Button 
+                                            onClick={() => setIsCheckingOut(true)}
+                                            className="w-full bg-[#BE8C56] text-[#101E29] hover:bg-[#CFBC85] font-black uppercase tracking-tighter h-14 text-lg"
+                                        >
+                                            {isCheckingOut ? "Securing Transaction..." : "Proceed to Checkout"}
                                         </Button>
-                                    </Link>
+                                        
+                                        {/* Trust Badges */}
+                                        <div className="grid grid-cols-2 gap-2 pt-2">
+                                            <div className="flex items-center gap-2 text-[10px] text-[#6B8994] uppercase tracking-tighter">
+                                                <Truck className="w-3 h-3 text-[#BE8C56]" /> Insured Delivery
+                                            </div>
+                                            <div className="flex items-center gap-2 text-[10px] text-[#6B8994] uppercase tracking-tighter">
+                                                <ShieldCheck className="w-3 h-3 text-[#BE8C56]" /> Secure Payment
+                                            </div>
+                                        </div>
+                                    </div>
                                 </CardContent>
                             </Card>
+
+                            {/* Prompt for Fitting */}
+                            <div className="p-6 bg-[#1B2D3C] border border-[#3B4B51] rounded-md text-center space-y-3">
+                                <p className="text-xs text-[#6B8994] uppercase tracking-[0.2em]">New to our tailors?</p>
+                                <p className="text-sm">Bespoke items require a physical fitting session.</p>
+                                <Button variant="link" className="text-[#BE8C56] uppercase text-xs font-bold p-0">
+                                    Learn about our process
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -230,11 +265,4 @@ export default function CartIndex({ cartItems }: Props) {
     );
 }
 
-CartIndex.layout = {
-    breadcrumbs: [
-        {
-            title: 'Cart',
-            href: '/cart',
-        },
-    ],
-};
+CartIndex.layout = (page: any) => <AppLayout children={page} />;

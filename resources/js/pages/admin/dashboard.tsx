@@ -6,10 +6,40 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { JSX } from "react";
+import { 
+    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+    PieChart, Pie, Cell, Legend 
+} from 'recharts';
 
+
+// Theme Colors for Charts
+const CHART_COLORS = {
+    copper: "#BE8C56",
+    amber: "#CFBC85",
+    sage: "#A4BF8E",
+    slate: "#6B8994",
+    terracotta: "#BF806C",
+    navy_light: "#1B2D3C"
+};
+
+// Mock Data for Charts
+const revenueData = [
+    { month: 'Jan', revenue: 45000 },
+    { month: 'Feb', revenue: 52000 },
+    { month: 'Mar', revenue: 48000 },
+    { month: 'Apr', revenue: 61000 },
+    { month: 'May', revenue: 55000 },
+    { month: 'Jun', revenue: 67000 },
+];
+
+const categoryData = [
+    { name: 'Bespoke Suits', value: 45 },
+    { name: 'Essentials', value: 25 },
+    { name: 'Fabrics', value: 20 },
+    { name: 'Accessories', value: 10 },
+];
 
 // Common Thread UI Assets
 const commonThreadLogoUrl = "/images/ct-logout.svg"; // Replace with your actual asset path
@@ -178,6 +208,87 @@ const lowStockProducts: Product[] = [
                     {/* MAIN CONTENT AREA */}
                     <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                         
+                        {/* --- ANALYTICS SECTION (NEW) --- */}
+
+                            
+                            {/* Area Chart: Revenue Trend */}
+                            <Card className="lg:col-span-2 bg-[#1B2D3C] border-[#1B2D3C]">
+                                <CardHeader>
+                                    <CardTitle className="text-xl font-bold tracking-tighter uppercase">Revenue Performance</CardTitle>
+                                    <CardDescription className="text-[#6B8994]">Monthly valuation of fulfilled commissions.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="h-[300px] w-full">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <AreaChart data={revenueData}>
+                                            <defs>
+                                                <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="5%" stopColor={CHART_COLORS.copper} stopOpacity={0.3}/>
+                                                    <stop offset="95%" stopColor={CHART_COLORS.copper} stopOpacity={0}/>
+                                                </linearGradient>
+                                            </defs>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#101E29" vertical={false} />
+                                            <XAxis 
+                                                dataKey="month" 
+                                                stroke="#6B8994" 
+                                                fontSize={12} 
+                                                tickLine={false} 
+                                                axisLine={false} 
+                                            />
+                                            <YAxis 
+                                                stroke="#6B8994" 
+                                                fontSize={12} 
+                                                tickLine={false} 
+                                                axisLine={false}
+                                                tickFormatter={(value) => `₱${value/1000}k`}
+                                            />
+                                            <Tooltip 
+                                                contentStyle={{ backgroundColor: '#101E29', border: '1px solid #1B2D3C', borderRadius: '4px' }}
+                                                itemStyle={{ color: '#FFFDEB' }}
+                                            />
+                                            <Area 
+                                                type="monotone" 
+                                                dataKey="revenue" 
+                                                stroke={CHART_COLORS.copper} 
+                                                strokeWidth={3}
+                                                fillOpacity={1} 
+                                                fill="url(#colorRev)" 
+                                            />
+                                        </AreaChart>
+                                    </ResponsiveContainer>
+                                </CardContent>
+                            </Card>
+
+                            {/* Pie Chart: Category Distribution */}
+                            <Card className="bg-[#1B2D3C] border-[#1B2D3C]">
+                                <CardHeader>
+                                    <CardTitle className="text-xl font-bold tracking-tighter uppercase">Service Mix</CardTitle>
+                                    <CardDescription className="text-[#6B8994]">Orders by product category.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="h-[300px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <PieChart>
+                                            <Pie
+                                                data={categoryData}
+                                                innerRadius={60}
+                                                outerRadius={80}
+                                                paddingAngle={5}
+                                                dataKey="value"
+                                            >
+                                                <Cell fill={CHART_COLORS.copper} />
+                                                <Cell fill={CHART_COLORS.amber} />
+                                                <Cell fill={CHART_COLORS.sage} />
+                                                <Cell fill={CHART_COLORS.slate} />
+                                            </Pie>
+                                            <Tooltip 
+                                                contentStyle={{ backgroundColor: '#101E29', border: '1px solid #1B2D3C' }}
+                                            />
+                                            <Legend verticalAlign="bottom" height={36}/>
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </CardContent>
+                            </Card>
+            
+
                         {/* RECENT ORDERS: Dominant section */}
                         <Card className="xl:col-span-2 bg-[#1B2D3C] border-[#1B2D3C]">
                             <CardHeader className="flex flex-row items-center justify-between gap-4 border-b border-[#101E29]">

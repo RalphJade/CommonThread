@@ -10,6 +10,21 @@ const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
+    resolve: (name) => {
+        const pages = import.meta.glob('./pages/**/*.tsx', { eager: true });
+        let page = pages[`./pages/${name}.tsx`];
+        
+        if (!page) {
+            // Try with /index suffix for directories
+            page = pages[`./pages/${name}/index.tsx`];
+        }
+        
+        if (!page) {
+            throw new Error(`Page not found: ${name}`);
+        }
+        
+        return page;
+    },
     layout: (name) => {
         switch (true) {
             case name === 'welcome':

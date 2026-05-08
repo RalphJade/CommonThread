@@ -15,6 +15,7 @@ use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
 {
+    public const HOME = '/dashboard';
     /**
      * Register any application services.
      */

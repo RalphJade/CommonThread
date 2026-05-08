@@ -2,16 +2,17 @@ import { Head, Link } from '@inertiajs/react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { orders as ordersRoute } from '@/routes';
 import { formatDate } from '@/lib/date-utils';
-import { Eye, Printer, Download } from 'lucide-react';
+import { Eye, Printer, Download, Filter } from 'lucide-react';
+import { useState } from 'react';
 
 interface OrderItem {
     id: number;
     product_id: number;
     order_id: number;
     quantity: number;
-    unit_price: number;
+    price: number;
+    product_name: string;
     created_at: string;
     product?: {
         id: number;
@@ -25,7 +26,10 @@ interface Order {
     order_number: string;
     user_id: number;
     status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
-    total_amount: number;
+    total: number;
+    subtotal: number;
+    tax: number;
+    shipping: number;
     created_at: string;
     updated_at: string;
     items?: OrderItem[];
@@ -61,6 +65,14 @@ const statusColors: Record<string, string> = {
 };
 
 export default function OrdersIndex({ orders }: Props) {
+    const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+    
+    const allStatuses = Array.from(new Set(orders.data.map(order => order.status))) as Array<Order['status']>;
+    
+    const filteredOrders = selectedStatus 
+        ? orders.data.filter(order => order.status === selectedStatus)
+        : orders.data;
+
     return (
         <>
             <Head title="My Orders" />
@@ -71,6 +83,42 @@ export default function OrdersIndex({ orders }: Props) {
                         View and track all your orders from Common Thread Apparel.
                     </p>
                 </div>
+
+                {/* Filter Section */}
+                {orders.data.length > 0 && (
+                    <Card className="bg-gray-50 dark:bg-gray-900">
+                        <CardContent className="pt-6">
+                            <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-2">
+                                    <Filter className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Filter by Status:</span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    <Button
+                                        variant={selectedStatus === null ? 'default' : 'outline'}
+                                        size="sm"
+                                        onClick={() => setSelectedStatus(null)}
+                                    >
+                                        All Orders ({orders.data.length})
+                                    </Button>
+                                    {allStatuses.map(status => {
+                                        const count = orders.data.filter(o => o.status === status).length;
+                                        return (
+                                            <Button
+                                                key={status}
+                                                variant={selectedStatus === status ? 'default' : 'outline'}
+                                                size="sm"
+                                                onClick={() => setSelectedStatus(status)}
+                                            >
+                                                {status.charAt(0).toUpperCase() + status.slice(1)} ({count})
+                                            </Button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
 
                 {orders.data.length === 0 ? (
                     <Card>
@@ -83,9 +131,23 @@ export default function OrdersIndex({ orders }: Props) {
                             </div>
                         </CardContent>
                     </Card>
+                ) : filteredOrders.length === 0 ? (
+                    <Card>
+                        <CardContent className="py-12">
+                            <div className="text-center">
+                                <p className="text-gray-600 dark:text-gray-400 mb-4">No orders found with this status</p>
+                                <Button 
+                                    variant="outline" 
+                                    onClick={() => setSelectedStatus(null)}
+                                >
+                                    Clear Filters
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
                 ) : (
                     <div className="space-y-4">
-                        {orders.data.map((order) => (
+                        {filteredOrders.map((order) => (
                             <Card key={order.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                                 <CardHeader className="pb-3">
                                     <div className="flex items-start justify-between gap-4">
@@ -104,7 +166,7 @@ export default function OrdersIndex({ orders }: Props) {
                                         </div>
                                         <div className="text-right">
                                             <div className="text-2xl font-bold">
-                                                ${order.total_amount.toFixed(2)}
+                                                ${order.total.toFixed(2)}
                                             </div>
                                             <p className="text-sm text-gray-600 dark:text-gray-400">
                                                 {order.items?.length || 0} item{order.items?.length !== 1 ? 's' : ''}
@@ -120,10 +182,10 @@ export default function OrdersIndex({ orders }: Props) {
                                                 <ul className="space-y-1 text-sm">
                                                     {order.items.map((item) => (
                                                         <li key={item.id} className="text-gray-700 dark:text-gray-300">
-                                                            {item.product?.name} × {item.quantity}
-                                                            {item.unit_price > 0 && (
+                                                            {item.product?.name || item.product_name} × {item.quantity}
+                                                            {item.price > 0 && (
                                                                 <span className="text-gray-600 dark:text-gray-400">
-                                                                    {' '}(${item.unit_price.toFixed(2)} each)
+                                                                    {' '}(${item.price.toFixed(2)} each)
                                                                 </span>
                                                             )}
                                                         </li>
@@ -160,7 +222,7 @@ OrdersIndex.layout = {
     breadcrumbs: [
         {
             title: 'Orders',
-            href: ordersRoute(),
+            href: '/orders',
         },
     ],
 };
