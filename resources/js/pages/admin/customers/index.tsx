@@ -1,11 +1,11 @@
-import AdminLayout from "@/layouts/AdminLayout";
 import { Head, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Eye, Search, UserPlus, Mail, Phone, Calendar } from 'lucide-react';
+import { useState } from 'react';
+import { Badge } from "@/components/ui/badge";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from "@/components/ui/input";
+import AdminLayout from "@/layouts/AdminLayout";
 
 // Common Thread Client Status Mapping
 const clientStatusMap: Record<string, { bg: string, text: string }> = {

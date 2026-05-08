@@ -11,7 +11,9 @@ export function useCanvasResize(containerRef: React.RefObject<HTMLDivElement>) {
     });
 
     useEffect(() => {
-        if (!containerRef.current) return;
+        if (!containerRef.current) {
+return;
+}
 
         const updateSize = () => {
             if (containerRef.current) {
@@ -93,6 +95,7 @@ export function useMousePosition() {
         };
 
         window.addEventListener('mousemove', handleMouseMove);
+
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, []);
 
@@ -120,6 +123,7 @@ export function useScrollVelocity() {
         };
 
         window.addEventListener('scroll', handleScroll);
+
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
@@ -140,13 +144,16 @@ export function useRaycast(
         objects: THREE.Object3D[],
         event: MouseEvent | React.MouseEvent,
     ): THREE.Intersection[] => {
-        if (!scene || !camera) return [];
+        if (!scene || !camera) {
+return [];
+}
 
         const rect = (event.target as HTMLElement).getBoundingClientRect();
         mouseRef.current.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         mouseRef.current.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
         raycasterRef.current.setFromCamera(mouseRef.current, camera);
+
         return raycasterRef.current.intersectObjects(objects);
     };
 
@@ -191,7 +198,9 @@ export function useThreeScene(
     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
 
     useEffect(() => {
-        if (!containerRef.current) return;
+        if (!containerRef.current) {
+return;
+}
 
         // Scene setup
         const scene = new THREE.Scene();
@@ -224,7 +233,9 @@ export function useThreeScene(
 
         // Handle resize
         const handleResize = () => {
-            if (!containerRef.current) return;
+            if (!containerRef.current) {
+return;
+}
 
             const newWidth = containerRef.current.clientWidth;
             const newHeight = containerRef.current.clientHeight;

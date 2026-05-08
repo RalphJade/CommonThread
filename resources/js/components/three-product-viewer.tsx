@@ -1,9 +1,9 @@
 'use client';
 
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Float, Environment } from '@react-three/drei';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useRef, useEffect, useState } from 'react';
-import * as THREE from 'three';
+import type * as THREE from 'three';
 import { createShirtModel, createHatModel, createPedestalStand } from '@/lib/three-product-models';
 
 interface ProductViewerProps {

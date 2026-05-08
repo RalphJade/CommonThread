@@ -1,3 +1,6 @@
+import { Head, Link, usePage } from '@inertiajs/react';
+import { ArrowRight, CheckCircle2, ChevronRight, Star, Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -7,9 +10,6 @@ import {
 // Import your existing auth components
 import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
-import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowRight, CheckCircle2, ChevronRight, Star, Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 export default function LandingPage() {
   const { auth } = usePage().props;

@@ -1,17 +1,17 @@
-import AdminLayout from "@/layouts/AdminLayout";
 import { Head } from "@inertiajs/react";
-import { useState } from "react";
 import { LayoutDashboard, ShoppingCart, Package, Users, TrendingUp, AlertCircle, FileText, Search, Printer, Edit } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { JSX } from "react";
+import { useState } from "react";
+import type { JSX } from "react";
 import { 
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     PieChart, Pie, Cell, Legend 
 } from 'recharts';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import AdminLayout from "@/layouts/AdminLayout";
 
 
 // Theme Colors for Charts

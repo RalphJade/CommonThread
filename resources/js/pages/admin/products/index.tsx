@@ -1,6 +1,4 @@
-import AdminLayout from "@/layouts/AdminLayout";
 import { Head } from "@inertiajs/react";
-import { useState } from "react";
 import { 
     Package, 
     Plus, 
@@ -13,16 +11,18 @@ import {
     AlertTriangle,
     Layers
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { 
     DropdownMenu, 
     DropdownMenuContent, 
     DropdownMenuItem, 
     DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import AdminLayout from "@/layouts/AdminLayout";
 
 interface Product {
     id: string;

@@ -1,6 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
-import React from 'react';
 import { LayoutDashboard, ShoppingBag, Shirt, Bell, CheckCircle, Package, User, LogOut, Menu } from 'lucide-react';
+import React from 'react';
 
 // 1. IMPORT SHADCN DIALOG COMPONENTS
 import {

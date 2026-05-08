@@ -57,6 +57,7 @@ export function createShirtModel(color: string = '#3b82f6'): THREE.Group {
     group.add(design);
 
     group.scale.set(1.5, 1.5, 1.5);
+
     return group;
 }
 
@@ -99,6 +100,7 @@ export function createHatModel(color: string = '#ef4444'): THREE.Group {
     group.add(logo);
 
     group.scale.set(1.2, 1.2, 1.2);
+
     return group;
 }
 
@@ -113,6 +115,7 @@ export function createPedestalStand(): THREE.Mesh {
     });
     const pedestal = new THREE.Mesh(geometry, material);
     pedestal.receiveShadow = true;
+
     return pedestal;
 }
 
@@ -127,6 +130,7 @@ export function createDisplayShelf(): THREE.Mesh {
     });
     const shelf = new THREE.Mesh(geometry, material);
     shelf.receiveShadow = true;
+
     return shelf;
 }
 
@@ -144,6 +148,7 @@ export function getRandomApparelColor(): string {
         '#8b5cf6', // Purple
         '#06b6d4', // Cyan
     ];
+
     return colors[Math.floor(Math.random() * colors.length)];
 }
 

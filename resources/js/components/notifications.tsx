@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
 import { Bell, X, Check, AlertCircle, Info } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
 export interface Notification {
     id: string;
@@ -54,6 +54,7 @@ export function NotificationCenter({
         if (!notification.read && onNotificationRead) {
             onNotificationRead(notification.id);
         }
+
         if (notification.actionUrl) {
             window.location.href = notification.actionUrl;
         }
@@ -61,6 +62,7 @@ export function NotificationCenter({
 
     const handleDismiss = (e: React.MouseEvent, id: string) => {
         e.stopPropagation();
+
         if (onNotificationDismiss) {
             onNotificationDismiss(id);
         }
@@ -167,6 +169,7 @@ interface ToastProps {
 export function Toast({ notification, onDismiss }: ToastProps) {
     useEffect(() => {
         const timer = setTimeout(onDismiss, 5000);
+
         return () => clearTimeout(timer);
     }, [onDismiss]);
 
@@ -253,16 +256,21 @@ export function Notification({
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(false), 7000);
+
         return () => clearTimeout(timer);
     }, []);
 
-    if (!isVisible) return null;
+    if (!isVisible) {
+return null;
+}
 
     return (
         <Card
             className={`p-4 ${notificationColors[type]} border cursor-pointer transition-opacity hover:opacity-80`}
             onClick={() => {
-                if (actionUrl) window.location.href = actionUrl;
+                if (actionUrl) {
+window.location.href = actionUrl;
+}
             }}
         >
             <div className="flex items-start gap-3">
@@ -282,11 +290,23 @@ function formatTime(date: Date): string {
     const now = new Date();
     const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-    if (seconds < 60) return 'just now';
+    if (seconds < 60) {
+return 'just now';
+}
+
     const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes}m ago`;
+
+    if (minutes < 60) {
+return `${minutes}m ago`;
+}
+
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}h ago`;
+
+    if (hours < 24) {
+return `${hours}h ago`;
+}
+
     const days = Math.floor(hours / 24);
+
     return `${days}d ago`;
 }

@@ -1,8 +1,4 @@
-import AdminLayout from "@/layouts/AdminLayout";
 import { Head, Link } from '@inertiajs/react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from "@/components/ui/badge";
 import { 
     ChevronLeft, 
     Mail, 
@@ -12,6 +8,10 @@ import {
     Clock,
     MapPin
 } from 'lucide-react';
+import { Badge } from "@/components/ui/badge";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import AdminLayout from "@/layouts/AdminLayout";
 
 interface Order {
     id: number;

@@ -1,4 +1,3 @@
-import AppLayout from "@/layouts/app-layout";
 import { Head } from "@inertiajs/react";
 import { 
     Search, 
@@ -8,12 +7,13 @@ import {
     Scissors,
     ArrowRight
 } from "lucide-react";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import AppLayout from "@/layouts/app-layout";
 
 interface Product {
     id: string;

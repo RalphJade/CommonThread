@@ -1,10 +1,10 @@
 import { Head, Link } from '@inertiajs/react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { formatDate } from '@/lib/date-utils';
 import { Eye, Printer, Download, Filter } from 'lucide-react';
 import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { formatDate } from '@/lib/date-utils';
 
 interface OrderItem {
     id: number;
@@ -103,6 +103,7 @@ export default function OrdersIndex({ orders }: Props) {
                                     </Button>
                                     {allStatuses.map(status => {
                                         const count = orders.data.filter(o => o.status === status).length;
+
                                         return (
                                             <Button
                                                 key={status}
